@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EHS English Cards</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f7fa;
+    padding:15px;
+    color:#333;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.header h1{
+    color:#0078D7;
+}
+
+.progress{
+    text-align:center;
+    margin-bottom:15px;
+    color:#666;
+}
+
+.search-box{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    margin-bottom:15px;
+    font-size:16px;
+}
+
+.card{
+
+    background:white;
+    border-radius:15px;
+    padding:20px;
+
+    box-shadow:
+    0 4px 10px rgba(0,0,0,0.1);
+
+}
+
+.title{
+    color:#0078D7;
+    margin-bottom:10px;
+}
+
+.question{
+
+    background:#EAF4FF;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    line-height:1.5;
+
+}
+
+.answer{
+
+    display:none;
+
+    margin-top:15px;
+
+    background:#F4F4F4;
+
+    padding:15px;
+
+    border-radius:10px;
+
+}
+
+.answer p{
+    margin-bottom:10px;
+}
+
+.keyword{
+
+    display:inline-block;
+
+    background:#0078D7;
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    margin:3px;
+
+    font-size:14px;
+
+}
+
+.buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+button{
+
+    flex:1;
+
+    min-width:120px;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+.show{
+    background:#28a745;
+}
+
+.listen{
+    background:#ff9800;
+}
+
+.prev{
+    background:#6c757d;
+}
+
+.next{
+    background:#0078D7;
+}
+
+@media(max-width:600px){
+
+.question{
+    font-size:18px;
+}
+
+button{
+    width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>📘 EHS English Cards</h1>
+</div>
+
+<div class="progress" id="progress"></div>
+
+<input
+class="search-box"
+placeholder="Search keyword..."
+onkeyup="searchCard(this.value)"
+>
+
+<div class="card">
+
+<h2 class="title" id="title"></h2>
+
+<div class="question" id="question"></div>
+
+<div class="answer" id="answer"></div>
+
+<div class="buttons">
+
+<button class="listen" onclick="speakQuestion()">
+🔊 Listen
+</button>
+
+<button class="show" onclick="toggleAnswer()">
+Show Answer
+</button>
+
+<button class="prev" onclick="prevCard()">
+⬅ Previous
+</button>
+
+<button class="next" onclick="nextCard()">
+Next ➡
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const cards=[
+
+{
+title:"Before Starting Work",
+
+question:
+"What daily preparations do we make for fire emergencies?",
+
+answer:
+"We inspect fire extinguishers, check alarms, and ensure emergency exits are clear.",
+
+chinese:
+"我们检查灭火器、检查报警器并确保安全出口畅通。",
+
+keywords:[
+"fire extinguisher",
+"alarm",
+"emergency exit",
+"evacuation"
+]
+},
+
+{
+title:"PPE",
+
+question:
+"What PPE must be worn in production areas?",
+
+answer:
+"Safety shoes, safety glasses and hearing protection must be worn.",
+
+chinese:
+"生产区域必须穿戴安全鞋、安全眼镜和听力防护用品。",
+
+keywords:[
+"PPE",
+"safety shoes",
+"safety glasses",
+"hearing protection"
+]
+},
+
+{
+title:"Fire Drill",
+
+question:
+"How often should fire drills be conducted?",
+
+answer:
+"Fire drills should be conducted according to company requirements and local regulations.",
+
+chinese:
+"消防演练应根据公司要求和当地法规开展。",
+
+keywords:[
+"fire drill",
+"evacuation",
+"emergency response"
+]
+}
+
+];
+
+let current=0;
+
+function renderCard(){
+
+let card=cards[current];
+
+document.getElementById("progress").innerHTML=
+`Card ${current+1} / ${cards.length}`;
+
+document.getElementById("title").innerHTML=
+card.title;
+
+document.getElementById("question").innerHTML=
+card.question;
+
+document.getElementById("answer").innerHTML=
+
+`
+<p><b>Answer:</b><br>${card.answer}</p>
+
+<p>
+${card.keywords.map(
+k=>`<span class="keyword">${k}</span>`
+).join("")}
+</p>
+
+<p><b>中文：</b><br>${card.chinese}</p>
+`;
+
+document.getElementById("answer").style.display="none";
+
+}
+
+function toggleAnswer(){
+
+let answer=
+document.getElementById("answer");
+
+if(answer.style.display==="none"){
+
+answer.style.display="block";
+
+}else{
+
+answer.style.display="none";
+
+}
+
+}
+
+function nextCard(){
+
+current++;
+
+if(current>=cards.length){
+
+current=0;
+
+}
+
+renderCard();
+
+}
+
+function prevCard(){
+
+current--;
+
+if(current<0){
+
+current=cards.length-1;
+
+}
+
+renderCard();
+
+}
+
+function speakQuestion(){
+
+let text=cards[current].question;
+
+let speech=
+new SpeechSynthesisUtterance(text);
+
+speech.lang="en-US";
+
+speech.rate=0.9;
+
+speechSynthesis.speak(speech);
+
+}
+
+function searchCard(keyword){
+
+keyword=
+keyword.toLowerCase();
+
+const index=
+cards.findIndex(card=>
+
+card.question.toLowerCase().includes(keyword)
+||
+card.title.toLowerCase().includes(keyword)
+
+);
+
+if(index>=0){
+
+current=index;
+
+renderCard();
+
+}
+
+}
+
+renderCard();
+
+</script>
+
+</body>
+</html>
